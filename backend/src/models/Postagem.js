@@ -12,12 +12,11 @@ class Postagem extends Model{
             {
                 sequelize,
                 tableName: "postagens",
-            }
-        );
+            });
     }
     
     static associate(models) {
-        this.belongsTo(models.Aluno, { foreignKey: "created_aluno_id"});
+        this.belongsTo(models.Aluno, { foreignKey: "created_aluno_id" });
         this.hasMany(models.Comentario)
     }
 }

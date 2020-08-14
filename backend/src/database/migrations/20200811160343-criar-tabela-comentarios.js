@@ -23,7 +23,7 @@ module.exports = {
             onUpdade: "CASCADE",
             onDelete: "CASCADE",
         },
-        postagens_id: {
+        postagem_id: {
             type:Sequelize.INTEGER,
             allowNull: false,
             references: {
