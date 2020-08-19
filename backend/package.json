@@ -1,20 +1,21 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "Projeto backend do Senai overFlow",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "Everson Silva",
+  "author": "Afonsosinho top",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.1.0",
+    "node-modules": "^1.0.1",
     "sequelize": "^6.3.4",
     "sequelize-cli": "^6.2.0"
   },

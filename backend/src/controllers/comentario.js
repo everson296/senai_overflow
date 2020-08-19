@@ -1,82 +1,54 @@
 const Comentario = require("../models/Comentario");
-const Aluno = require("../models/Aluno");
 const Postagem = require("../models/Postagem");
 
-module.exports = {
-    
-    //implementar listagem de comentarios
-    async index(req, res){
-        // recuperando o id da requisição
+module.exports={
+   //Implementar a listagem de comentarios
+    async index(req,res){
         const { postId } = req.params;
-        
-        const postagem = await Postagem.findByPk(postId);
-        
-        if(!postagem){
-            return res.status(404).send({ erro: "Postagem não encontrada" });
-        }
-        
-        const comentarios = await postagem.getComentarios({
-            include: {
-                association: "Aluno",
-                attributes: ["id", "nome"],
-            },
-            
-            attributes: ["id", "descricao"],
-            order: [["created_at", "ASC"]],
-        });
-        
-        res.send(comentarios);
+
+       const postagem = await Postagem.findByPk(postId);
+       if(!postagem){
+        return res.status(404).send({erro: "Postagem não encontrada"});
+       }
+       const comentarios = await postagem.getComentarios({
+        include:{
+            association: "Aluno",
+            attributes:["id", "nome"],
+        },  
+        attributes:["id", "descricao"],
+       });
+
+       res.send(comentarios);
     },
-    
-    //implementar inserção de comentarios
-    async store(req, res){
-        // pegando o id do aluno no banco de dados
+    //Implementar a inserção de comentarios
+    async store(req, res) {
+        //recuperar o id do aluno
         const alunoId = req.alunoId;
-        
-        //recuperando o id da url
+        //recuperar o id da postagem
         const { postId } = req.params;
-        
-        //recuperando o testo da descrição
+        //recuperar a descricao do comentario
         const { descricao } = req.body;
-                        
-        // procurando a postagem por id
+        console.log(req.body)
+        //procurar a postagem pelo id
         const postagem = await Postagem.findByPk(postId);
-        
+
+        //se não existir, retornar erro
         if (!postagem) {
-            return res.status(404).send({ erro: "postagem não encontrada" });
+          return res.status(404).send({ erro: "Postagem não encontrada" });
         }
-            
-        // criar um comentario 
-        // passando a descrição e o id do aluno
+        //criar o comentário usando o createComentario
+        //passando o id do aluno e a descricao
         let comentario = await postagem.createComentario({
-            descricao,
-            aluno_id: alunoId,
+          descricao,
+          aluno_id: alunoId,
         });
-        
-        // formatando o retorno
+
         comentario = comentario.dataValues;
         comentario.postagem_id = comentario.PostagemId;
-        delete comentario.PostagemId;        
-        delete comentario.AlunoId;        
-        
+
+        delete comentario.PostagemId;
+        delete comentario.AlunoId;
+        //responder com status de criado com sucesso
         res.status(201).send(comentario);
-    },
-    
-    updade() {}, 
-
-    delete() {},
-};
-
-      
-    
-    
-    
-
-    
-  
-  
-
-
-
-
-///postagens/:postId/comentarios
+      },
+}

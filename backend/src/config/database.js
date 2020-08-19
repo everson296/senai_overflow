@@ -1,13 +1,13 @@
-// timestamp - coloca created_at e update_at nas tabelas
-//underscored - separa os nomes deixando-os no padão snake_case
-
+//timestamp coloca created_at e update_at nas tabelas
+// underscored coloca os nomes de tabelas e atribuutos como snake_case
 module.exports = {
     dialect: "mysql",
     host: "localhost",
     username: "root",
-    password: "bcd127",
+    password: "bcd147",
     database: "senai_overflow",
-    define: {
+    logging: console.log,
+    define:{
         timestamp: true,
         underscored: true,
     },
