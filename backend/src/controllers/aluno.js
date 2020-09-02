@@ -1,63 +1,70 @@
-const {Op} = require("sequelize");
-const Aluno = require("../models/Alunos");
+const { Op } = require("sequelize");
+const Aluno = require("../models/Aluno");
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
-const authConfig = require("../config/auth.json");
+const authConfig = require("../config/auth.json")
 
 module.exports = {
-    //Lista todos os alunos
-    async listar(req, res){
-        const aluno = await Aluno.findAll();
-        res.send(aluno);
-    },
-    //Listar um aluno pelo id
-    async buscarPorId(req,res){
-        const {id} = req.params;
+  //lista todos os alunos
+  async listar(req, res) {
+    const alunos = await Aluno.findAll();
 
-        //Buscar o aluno pela chave
-        const aluno = await Aluno.findByPk(id, {raw:true});
+    res.send(alunos);
+  },
 
-        console.log(aluno);
-        //Verifica se o aluno nao foi encontrado
-        if(!aluno){
-           return res.status(404).send({error:"Aluno nao encontrado"});
-        }
+  // buscar um aluno pelo id
+  async buscarPorId(req, res) {
+    const { id } = req.params;
 
-        delete aluno.senha;
-        //retorna o aluno encontrado
-        res.send(aluno);
-    },
-    //Inserções 
-    async store(request,response){
-        const {ra, nome, email, senha} = request.body;
-        //Cadastrar aluno do banco de dados
+    // busca o aluno pela chave
+    let aluno = await Aluno.findByPk(id, { raw: true });
 
-        //verficar aluno se ja existe 
-        let aluno = await Aluno.findOne({
-            where:{[Op.or]: [{ra:ra},{email:email}]}});
-
-        if(aluno){
-            return response.status(400).send({error: "Aluno ja cadastrado"})
-        }
-        const senhaCrypto = await bcrypt.hash(senha, 10);
-
-        aluno = await Aluno.create({ ra:ra, nome:nome, email:email, senha:senhaCrypto });
-
-        const token = jwt.sign({alunoId: aluno.id}, authConfig.secret);
-  
-        response.status(201).send({
-            aluno:{
-                alunoId: aluno.id,
-                nome: aluno.nome,
-                ra: aluno.ra,
-            },
-            token
-        });
-    },
-    update(){
-
-    },
-    delete(){
-
+    // verifica se o aluno não foi encontrado
+    if (!aluno) {
+      return res.status(404).send({ erro: "Aluno não encontrado" });
     }
+
+    delete aluno.senha;
+
+    // retorna o aluno encontrado
+    res.send(aluno);
+  },
+
+  //metodo responsavel por fazer as inserções
+  async store(req, res) {
+    const { ra, nome, email, senha } = req.body;
+
+    // verificar se aluno já existe
+    // select * from alunos where ra = ? or email = ?
+    let aluno = await Aluno.findOne({
+      where: {
+        [Op.or]: [{ ra: ra }, { email: email }],
+      },
+    });
+
+    if (aluno) {
+      return res.status(400).send({ erro: "Aluno já cadastrado" });
+    }
+
+    const senhaCripto = await bcrypt.hash(senha, 10);
+
+    aluno = await Aluno.create({ ra, nome, email, senha: senhaCripto });
+
+    const token = jwt.sign({alunoId: aluno.id}, authConfig.secret);
+
+    res.status(201).send(
+      {
+        aluno: {
+          alunoId: aluno.id,
+          nome: aluno.nome,
+          ra: aluno.ra,
+        },
+        token
+      }
+    );
+  },
+
+  update() {},
+
+  delete() {},
 };

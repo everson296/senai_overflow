@@ -1,8 +1,7 @@
-const { request } = require("express");
+//sobe a aplicação
 
 const app = require("./app");
 
-
-app.listen(3001, ()=>{
-    console.log("Servidor rodando na porta 3000")
-})
+app.listen(3333, () => {
+    console.log("Servido rodando na porta 3333");
+});
